@@ -1,0 +1,6 @@
+[build]
+command = "flutter build web --release"
+publish = "build/web"
+
+[context.production.environment]
+OMDB_API_KEY = "9dc4772f29bc8ea6815d08313e064148"

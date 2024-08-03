@@ -3,7 +3,9 @@ import 'package:http/http.dart' as http;
 import '../models/movie.dart';
 
 class MovieRepository {
-  final String apiKey = '9dc4772f29bc8ea6815d08313e064148';
+  final String apiKey;
+
+  MovieRepository({required this.apiKey});
 
   Future<List<Movie>> fetchMovies(String query) async {
     final response = await http.get(

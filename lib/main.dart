@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'bloc/movie_bloc.dart';
+import 'repository/movie_repository.dart';
 import 'bloc/movie_event.dart';
 import 'bloc/movie_state.dart';
-import 'repository/movie_repository.dart';
 
-void main() {
+Future<void> main() async {
+  await dotenv.load(fileName: ".env");
   runApp(MyApp());
 }
 
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: RepositoryProvider(
-        create: (context) => MovieRepository(),
+        create: (context) => MovieRepository(apiKey: dotenv.env['OMDB_API_KEY']!),
         child: HomePage(),
       ),
     );
@@ -33,8 +35,7 @@ class HomePage extends StatelessWidget {
         title: Text('OMDb Flutter Web'),
       ),
       body: BlocProvider(
-        create: (context) =>
-            MovieBloc(movieRepository: context.read<MovieRepository>()),
+        create: (context) => MovieBloc(movieRepository: context.read<MovieRepository>()),
         child: MovieSearch(),
       ),
     );
@@ -60,9 +61,7 @@ class MovieSearch extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () {
-            context
-                .read<MovieBloc>()
-                .add(FetchMovies(query: _controller.text));
+            context.read<MovieBloc>().add(FetchMovies(query: _controller.text));
           },
           child: Text('Search'),
         ),
